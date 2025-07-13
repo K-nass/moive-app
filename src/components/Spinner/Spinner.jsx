@@ -5,7 +5,7 @@ export default function Spinner() {
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="text-center">
         <div
-          className="spinner-border text-warning"
+          className="spinner-border text-info"
           style={{ width: "3rem", height: "3rem" }}
         ></div>
         <p className="mt-3 text-muted">Loading...</p>

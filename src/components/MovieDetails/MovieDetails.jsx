@@ -29,7 +29,7 @@ export default function MovieDetails() {
             src={getImageUrl(movie, "w500")}
             alt={movie.title}
             className="img-fluid rounded-4 shadow-sm"
-            style={{ maxHeight: "500px", objectFit: "contain", width: "100%" }}
+            style={{ maxHeight: "500px", objectFit: "cover", width: "100%" }}
           />
         </div>
         <div className="col-md-7">

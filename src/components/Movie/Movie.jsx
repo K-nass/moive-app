@@ -6,12 +6,15 @@ import WishlistBtn from "../WishlistBtn/WishlistBtn";
 
 export default function Movie({ movie }) {
   return (
-    <div className="card h-100 shadow-sm">
+    <div
+      className="card h-100 shadow-sm movie-hover"
+      style={{ transition: "transform 0.3s ease" }}
+    >
       <img
         src={getImageUrl(movie, "w500")}
         className="card-img-top"
         alt={movie.title}
-        style={{ objectFit: "contain" }}
+        style={{ objectFit: "cover", maxHeight: "350px" }}
       />
       <div className="card-body d-flex flex-column">
         <h5 className="card-title">
