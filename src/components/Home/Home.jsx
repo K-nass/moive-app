@@ -1,52 +1,68 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer } from "react";
 import Movie from "../Movie/Movie";
 import Search from "../Search/Search";
 import Spinner from "../Spinner/Spinner";
 
+const initialState = {
+  movies: [],
+  searchMovie: "",
+  isLoading: true,
+};
 
+function reducer(state, action) {
+switch (action.type) {
+  case "SET_MOVIES":
+    return { ...state, movies: action.payload };
+  case "SET_LOADING":
+    return { ...state, isLoading: action.payload };
+  case "SET_SEARCH":
+    return { ...state, searchMovie: action.payload };
+  default:
+    return state;
+}
+}
 export default function Home() {
-  const [movies, setMovies] = useState([]);
-  const [searchMovie, setSearchMovie] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { movies, searchMovie, isLoading } = state;
 
-  useEffect(() => {
-    setIsLoading(true);
+useEffect(() => {
+    dispatch({ type: "SET_LOADING", payload: true });
     axios
       .get(
         "https://api.themoviedb.org/3/movie/popular?api_key=f7078bdc341259627640210003c29a20"
       )
-      .then((res) => setMovies(res.data.results))
-      .catch(() => setMovies([]))
-      .finally(() => setIsLoading(false));
+      .then((res) => dispatch({ type: "SET_MOVIES", payload: res.data.results }))
+      .catch(() => dispatch({ type: "SET_MOVIES", payload: [] }))
+      .finally(() => dispatch({ type: "SET_LOADING", payload: false }));
   }, []);
 
-  function handleChangeMovie(e) {
-    setSearchMovie(e.target.value);
-  }
-
   useEffect(() => {
-    setIsLoading(true);
+    dispatch({ type: "SET_LOADING", payload: true });
+
     if (!searchMovie.trim()) {
-      setIsLoading(true);
       axios
         .get(
           "https://api.themoviedb.org/3/movie/popular?api_key=f7078bdc341259627640210003c29a20"
         )
-        .then((res) => setMovies(res.data.results))
-        .catch(() => setMovies([]))
-        .finally(() => setIsLoading(false));
+        .then((res) => dispatch({ type: "SET_MOVIES", payload: res.data.results }))
+        .catch(() => dispatch({ type: "SET_MOVIES", payload: [] }))
+        .finally(() => dispatch({ type: "SET_LOADING", payload: false }));
       return;
     }
+
     axios
       .get(
         `https://api.themoviedb.org/3/search/movie?api_key=f7078bdc341259627640210003c29a20&query=${searchMovie}`
       )
-      .then((res) => setMovies(res.data.results))
-      .catch(() => setMovies([]))
-      .finally(() => setIsLoading(false));
+      .then((res) => dispatch({ type: "SET_MOVIES", payload: res.data.results }))
+      .catch(() => dispatch({ type: "SET_MOVIES", payload: [] }))
+      .finally(() => dispatch({ type: "SET_LOADING", payload: false }));
   }, [searchMovie]);
 
+  function handleChangeMovie(e) {
+    dispatch({ type: "SET_SEARCH", payload: e.target.value });
+  }
   return (
     <div className="container mt-4">
       <Search searchMovie={searchMovie} onSearchMovie={handleChangeMovie} />
